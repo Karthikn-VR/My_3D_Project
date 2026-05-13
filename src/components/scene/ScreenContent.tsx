@@ -13,7 +13,7 @@
   ─────────────────────────────────────────────────────────────────
 */
 
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Text } from '@react-three/drei'
 import { RenderTexture, PerspectiveCamera } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
@@ -33,7 +33,7 @@ const C = {
 }
 
 // ─── Tiny blinking cursor ─────────────────────────────────────────────────────
-function Cursor({ x, y }: { x: number; y: number }) {
+function Cursor({ x, y, scale = 1 }: { x: number; y: number; scale?: number }) {
   const ref = useRef<any>(null)
   useFrame(({ clock }) => {
     if (ref.current)
@@ -44,7 +44,7 @@ function Cursor({ x, y }: { x: number; y: number }) {
     <Text
       ref={ref}
       position={[x, y, 0.01]}
-      fontSize={0.06}
+      fontSize={0.06 * scale}
       color={C.accent}
       anchorX="left"
       anchorY="middle"
@@ -55,7 +55,7 @@ function Cursor({ x, y }: { x: number; y: number }) {
 }
 
 // ─── About Scene ─────────────────────────────────────────────────────────────
-function AboutScene() {
+function AboutScene({ scale = 1 }: { scale?: number }) {
   return (
     <>
       <color attach="background" args={[C.bg]} />
@@ -65,7 +65,7 @@ function AboutScene() {
         <planeGeometry args={[2, 0.08]} />
         <meshBasicMaterial color={C.panel} />
       </mesh>
-      <Text position={[-0.75, 0.82, 0.01]} fontSize={0.04} color={C.muted} anchorX="left" anchorY="middle">
+      <Text position={[-0.75, 0.82, 0.01]} fontSize={0.04 * scale} color={C.muted} anchorX="left" anchorY="middle">
         ~/about
       </Text>
       {[0.72, 0.76, 0.80].map((x, i) => (
@@ -76,10 +76,10 @@ function AboutScene() {
       ))}
 
       {/* Name */}
-      <Text position={[-0.75, 0.62, 0.01]} fontSize={0.11} color={C.white} anchorX="left" anchorY="middle" fontWeight="bold">
+      <Text position={[-0.75, 0.62, 0.01]} fontSize={0.11 * scale} color={C.white} anchorX="left" anchorY="middle" fontWeight="bold">
         Karthikeyan VR
       </Text>
-      <Text position={[-0.75, 0.47, 0.01]} fontSize={0.055} color={C.accent} anchorX="left" anchorY="middle">
+      <Text position={[-0.75, 0.47, 0.01]} fontSize={0.055 * scale} color={C.accent} anchorX="left" anchorY="middle">
         Developer &amp; Designer
       </Text>
 
@@ -95,7 +95,7 @@ function AboutScene() {
         '',
         'learning new things Every Day.',
       ].map((line, i) => (
-        <Text key={i} position={[-0.75, 0.27 - i * 0.1, 0.01]} fontSize={0.048} color={C.dim} anchorX="left" anchorY="middle">
+        <Text key={i} position={[-0.75, 0.27 - i * 0.1, 0.01]} fontSize={0.048 * scale} color={C.dim} anchorX="left" anchorY="middle">
           {line}
         </Text>
       ))}
@@ -110,7 +110,7 @@ function AboutScene() {
               <planeGeometry args={[0.48, 0.1]} />
               <meshBasicMaterial color={C.border} />
             </mesh>
-            <Text position={[0, 0, 0.01]} fontSize={0.042} color={C.accent2} anchorX="center" anchorY="middle">
+            <Text position={[0, 0, 0.01]} fontSize={0.042 * scale} color={C.accent2} anchorX="center" anchorY="middle">
               {skill}
             </Text>
           </group>
@@ -122,10 +122,10 @@ function AboutScene() {
         <planeGeometry args={[2, 0.07]} />
         <meshBasicMaterial color={C.accent} />
       </mesh>
-      <Text position={[-0.75, -0.82, 0.01]} fontSize={0.035} color={C.bg} anchorX="left" anchorY="middle" fontWeight="bold">
+      <Text position={[-0.75, -0.82, 0.01]} fontSize={0.035 * scale} color={C.bg} anchorX="left" anchorY="middle" fontWeight="bold">
         NORMAL  ·  about.md  ·  ✓ ready
       </Text>
-      <Cursor x={0.65} y={-0.37} />
+      <Cursor x={0.65} y={-0.37} scale={scale} />
     </>
   )
 }
@@ -138,7 +138,7 @@ const PROJECTS = [
   { name: 'NoteVault',    tech: 'Electron · SQLite', status: 'paused', color: C.muted  },
 ]
 
-function PortfolioScene() {
+function PortfolioScene({ scale = 1 }: { scale?: number }) {
   return (
     <>
       <color attach="background" args={[C.bg]} />
@@ -148,7 +148,7 @@ function PortfolioScene() {
         <planeGeometry args={[2, 0.08]} />
         <meshBasicMaterial color={C.panel} />
       </mesh>
-      <Text position={[-0.75, 0.82, 0.01]} fontSize={0.04} color={C.muted} anchorX="left" anchorY="middle">
+      <Text position={[-0.75, 0.82, 0.01]} fontSize={0.04 * scale} color={C.muted} anchorX="left" anchorY="middle">
         ~/projects
       </Text>
       {[0.72, 0.76, 0.80].map((x, i) => (
@@ -159,10 +159,10 @@ function PortfolioScene() {
       ))}
 
       {/* Heading */}
-      <Text position={[-0.75, 0.62, 0.01]} fontSize={0.09} color={C.white} anchorX="left" anchorY="middle" fontWeight="bold">
+      <Text position={[-0.75, 0.62, 0.01]} fontSize={0.09 * scale} color={C.white} anchorX="left" anchorY="middle" fontWeight="bold">
         Projects
       </Text>
-      <Text position={[-0.75, 0.49, 0.01]} fontSize={0.042} color={C.muted} anchorX="left" anchorY="middle">
+      <Text position={[-0.75, 0.49, 0.01]} fontSize={0.042 * scale} color={C.muted} anchorX="left" anchorY="middle">
         {PROJECTS.length} repos · sorted by activity
       </Text>
 
@@ -177,10 +177,10 @@ function PortfolioScene() {
             <planeGeometry args={[0.012, 0.22]} />
             <meshBasicMaterial color={p.color} />
           </mesh>
-          <Text position={[-0.72, 0.05, 0.01]} fontSize={0.058} color={C.white} anchorX="left" anchorY="middle" fontWeight="bold">
+          <Text position={[-0.72, 0.05, 0.01]} fontSize={0.058 * scale} color={C.white} anchorX="left" anchorY="middle" fontWeight="bold">
             {p.name}
           </Text>
-          <Text position={[-0.72, -0.05, 0.01]} fontSize={0.038} color={C.muted} anchorX="left" anchorY="middle">
+          <Text position={[-0.72, -0.05, 0.01]} fontSize={0.038 * scale} color={C.muted} anchorX="left" anchorY="middle">
             {p.tech}
           </Text>
           <mesh position={[0.65, 0.05, 0.01]}>
@@ -192,7 +192,7 @@ function PortfolioScene() {
               }
             />
           </mesh>
-          <Text position={[0.65, 0.05, 0.02]} fontSize={0.036} color={p.color} anchorX="center" anchorY="middle">
+          <Text position={[0.65, 0.05, 0.02]} fontSize={0.036 * scale} color={p.color} anchorX="center" anchorY="middle">
             {p.status}
           </Text>
         </group>
@@ -203,10 +203,10 @@ function PortfolioScene() {
         <planeGeometry args={[2, 0.07]} />
         <meshBasicMaterial color={C.accent2} />
       </mesh>
-      <Text position={[-0.75, -0.82, 0.01]} fontSize={0.035} color={C.bg} anchorX="left" anchorY="middle" fontWeight="bold">
+      <Text position={[-0.75, -0.82, 0.01]} fontSize={0.035 * scale} color={C.bg} anchorX="left" anchorY="middle" fontWeight="bold">
         NORMAL  ·  projects.md  ·  4 items
       </Text>
-      <Cursor x={0.65} y={-0.62} />
+      <Cursor x={0.65} y={-0.62} scale={scale} />
     </>
   )
 }
@@ -218,12 +218,31 @@ interface ScreenContentProps {
 }
 
 export function ScreenContent({ geometry, activeView = 'about' }: ScreenContentProps) {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    height: typeof window !== 'undefined' ? window.innerHeight : 800
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isMobile = windowSize.width < 768;
+  const scaleFactor = isMobile ? 0.75 : 1;
+
   return (
     <mesh geometry={geometry}>
       <meshBasicMaterial>
         <RenderTexture attach="map" anisotropy={16}>
           <PerspectiveCamera makeDefault position={[0, 0, 1.5]} />
-          {activeView === 'portfolio' ? <PortfolioScene /> : <AboutScene />}
+          {activeView === 'portfolio' ? <PortfolioScene scale={scaleFactor} /> : <AboutScene scale={scaleFactor} />}
         </RenderTexture>
       </meshBasicMaterial>
     </mesh>

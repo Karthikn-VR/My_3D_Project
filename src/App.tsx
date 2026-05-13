@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
@@ -18,6 +18,25 @@ import { Model as Isometric } from "./components/scene/Room";
 export default function App() {
   const [activeView, setActiveView] = useState<ViewKey>("yourViewName");
   const [isStarted, setIsStarted] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    height: typeof window !== 'undefined' ? window.innerHeight : 800
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isMobile = windowSize.width < 768;
+  const sceneScale = isMobile ? 0.6 : 1;
+  const cameraFov = isMobile ? 45 : 35;
 
   return (
     <div
@@ -37,7 +56,7 @@ export default function App() {
         dpr={[1, 2]}
         camera={{
           position: [0.38, 1.07, 1.12],
-          fov: 35,
+          fov: cameraFov,
         }}
         gl={{
           antialias: true,
@@ -57,12 +76,12 @@ export default function App() {
 
         {/* Environment Floor & Floating Elements */}
         <EnvironmentFloor />
-        <FloatingParticles count={1500} />
+        <FloatingParticles count={isMobile ? 800 : 1500} />
         
         <ContactShadows 
-          position={[0, -0.8, 0]} 
+          position={[0, -0.8 * sceneScale, 0]} 
           opacity={0.8} 
-          scale={20} 
+          scale={20 * sceneScale} 
           blur={2.5} 
           far={2} 
           resolution={512} 
@@ -71,9 +90,9 @@ export default function App() {
 
         {/* Model & Integrated World Text */}
         <Suspense fallback={null}>
-          <group position={[0, -0.8, 0]}>
+          <group position={[0, -0.8 * sceneScale, 0]} scale={sceneScale}>
             <Isometric activeView={activeView} onViewChange={setActiveView} isStarted={isStarted} />
-            <SceneText />
+            {!isMobile && <SceneText />}
           </group>
         </Suspense>
 
@@ -84,9 +103,6 @@ export default function App() {
 
       {/* Cinematic UI Overlay - Rendered after Canvas to be on top */}
       <UIOverlay activeView={activeView} onViewChange={setActiveView} />
-
-
-      
     </div>
   );
 }

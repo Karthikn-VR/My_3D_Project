@@ -105,20 +105,24 @@ export function Model({ activeView, onViewChange, isStarted = false, ...props }:
   const { nodes, materials } = useGLTF('/assets/models/room.gltf') as unknown as GLTFResult
   const [hovered, setHovered] = useState(false);
   const [showButton, setShowButton] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    height: typeof window !== 'undefined' ? window.innerHeight : 800
+  });
 
   useEffect(() => {
-    if (activeView === "computer") {
-      setShowButton(false);
-    } else if (isStarted) {
-      // Delay showing the button by 2 seconds when returning from computer view
-      // OR immediately if we just finished the initial loading screen
-      const timer = setTimeout(() => {
-        setShowButton(true);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [activeView, isStarted]);
-   
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isMobile = windowSize.width < 768;
+
   useEffect(() => {
     // 1. MONITOR & PC LIGHTS
     const screenMat = materials.screen as THREE.MeshStandardMaterial;
@@ -183,6 +187,19 @@ export function Model({ activeView, onViewChange, isStarted = false, ...props }:
 
   }, [materials]);
 
+  useEffect(() => {
+    if (activeView === "computer") {
+      setShowButton(false);
+    } else if (isStarted) {
+      // Delay showing the button by 2 seconds when returning from computer view
+      // OR immediately if we just finished the initial loading screen
+      const timer = setTimeout(() => {
+        setShowButton(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [activeView, isStarted]);
+
   return (
     <group {...props} dispose={null}>
       
@@ -243,12 +260,12 @@ export function Model({ activeView, onViewChange, isStarted = false, ...props }:
           <Html
             position={[0.3, 0.4, 0.5]} // Position relative to monitor group
             center
-            distanceFactor={8}
+            distanceFactor={isMobile ? 12 : 8}
             occlude={false}
             style={{
               transition: 'all 0.5s',
               opacity: hovered ? 1 : 0.8,
-              transform: `scale(${hovered ? 1.2 : 1})`,
+              transform: `scale(${hovered ? (isMobile ? 1.5 : 1.2) : 1})`,
             }}
           >
             <div 
