@@ -3,7 +3,7 @@
 A cinematic, interactive 3D environment project built with **React**, **Three.js**, and **Vite**. This project showcases an immersive room environment with dynamic lighting, smooth camera animations, and a polished user interface.
 
 ## 🚀 Live Demo
-Deploy your project on Vercel to see it in action! (Add your link here)
+[live at](https://my-3-d-project.vercel.app/)
 
 ## ✨ Features
 
